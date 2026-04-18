@@ -1,7 +1,9 @@
 # heavily inspired by # downloaded from https://www.tjmahr.com/plotting-partial-pooling-in-mixed-effects-models/
 # Sleepstudy example
 library(brms)
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(tibble)
 library(ggrepel)
 
 #-------------  Sleepstudy
