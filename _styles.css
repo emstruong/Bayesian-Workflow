@@ -1,3 +1,18 @@
+/* Fix tinytable legibility: Bootstrap's --bs-table-bg is transparent in the
+   readable theme, causing cells to render as translucent gray over the page bg */
+.tinytable {
+  --bs-table-bg: var(--bs-body-bg, white);
+  --bs-table-color: var(--bs-body-color, black);
+  --bs-table-striped-bg: rgba(0, 0, 0, 0.04);
+  --bs-table-striped-color: var(--bs-body-color, black);
+  background-color: var(--bs-body-bg, white);
+  color: var(--bs-body-color, black);
+}
+
+.tinytable td, .tinytable th {
+  color: var(--bs-body-color, black) !important;
+}
+
 /* Clear backgrounds applied directly to the code element */
 code.sourceCode.stan {
   background: transparent !important;
