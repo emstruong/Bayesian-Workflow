@@ -120,7 +120,7 @@ birthdays |>
 #| label: fig-births-per-day-of-year
 birthdays |>
   group_by(day_of_year2) |>
-  summarise(meanbirths = mean(births_relative100)) |>
+  summarise(meanbirths = mean(births_relative100), .groups = "drop") |>
   ggplot(aes(x = as.Date("1986-12-31") + day_of_year2, y = meanbirths)) +
   geom_point(color = col_data) +
   layers_hline100 +
@@ -134,7 +134,7 @@ birthdays |>
 #| label: fig-births-per-day-of-week
 birthdays |>
   group_by(day_of_week) |>
-  summarise(meanbirths = mean(births_relative100)) |>
+  summarise(meanbirths = mean(births_relative100), .groups = "drop") |>
   ggplot(aes(x = day_of_week, y = meanbirths)) +
   geom_point(color = col_data, size = 4) +
   layers_hline100 +

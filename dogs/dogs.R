@@ -329,7 +329,7 @@ powerscale_sensitivity(bfit_0h, variable = variables(as_draws(bfit_0h))[1:6]) |>
 #'
 #' Instead of going straight to the 2-parameter log model by @Bush+Mosteller:1955,
 #' we test one parameter model which by construction gives probability 1 at time $t=1$.
-#' We assign a uniform prior ($\matrhm{beta}(1,1) is uniform from $0$ to $1$) on $a$.
+#' We assign a uniform prior ($\mathrm{beta}(1,1)$ is uniform from $0$ to $1$) on $a$.
 #' $$
 #' \begin{aligned}
 #' \Pr(\mathrm{shock}) & = a^{(t - 1)}\\
@@ -365,7 +365,7 @@ loo_compare(bfit_0, bfit_0h, bfit_1) |>
 #' a,b & \sim \mathrm{uniform}(0,1),
 #' \end{aligned}
 #' $$
-#' where $x_{1jt}$ and $x_{1jt}$ are the number of previous shocks and
+#' where $x_{1jt}$ and $x_{2jt}$ are the number of previous shocks and
 #' avoidances, respectively, in trials $1,\ldots,t-1$ for dog $j$.
 #| label: bfit_2
 #| results: "hide"

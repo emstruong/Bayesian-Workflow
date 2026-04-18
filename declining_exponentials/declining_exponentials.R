@@ -202,7 +202,7 @@ print(fit_2b)
 #' Let's try a multiplicative error, with a lognormal distribution:
 #' $$
 #' y_i = ae^{-bx_i} * \epsilon_i, \text{ for } i=1,\dots,N\\
-#' \log\epsilon_i \sim \operatorname{normal}(0,\log\sigma), \text{ for } i=1,\dots,N
+#' \log\epsilon_i \sim \operatorname{normal}(0,\sigma), \text{ for } i=1,\dots,N
 #' $$
 #' 
 #' Here is the model in Stan:
