@@ -46,7 +46,10 @@ knitr::opts_chunk$set(
 #| cache: FALSE
 library(rprojroot)
 root <- has_file(".Bayesian-Workflow-root")$make_fix_file()
-library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tibble)
 library(tictoc)
 mytoc <- \() {
   toc(func.toc = \(tic, toc, msg) {
