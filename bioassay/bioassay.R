@@ -47,9 +47,10 @@ library(marginaleffects)
 
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -97,7 +98,7 @@ bioassay_data <- with(df_bioassay,
 #'
 #' Stan model 0 (without priors)
 bioassay_stan_file <- root("bioassay","bioassay0.stan")
-#| output: asis
+#| results: asis
 print_stan_file(bioassay_stan_file)
 
 #' Compile the Stan model code using pedantic mode
@@ -106,7 +107,7 @@ mod0 <- cmdstan_model(bioassay_stan_file, pedantic = TRUE)
 
 #' Stan model 1 (with priors)
 bioassay_stan_file <- root("bioassay","bioassay1.stan")
-#| output: asis
+#| results: asis
 print_stan_file(bioassay_stan_file)
 
 #' Compile the updated Stan model code using pedantic mode

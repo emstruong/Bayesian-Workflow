@@ -64,9 +64,10 @@ set.seed(298465)
 
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -635,7 +636,7 @@ pp_check(fit_pvi, type = "loo_pit_ecdf", method = "correlated")
 #' needed to get the correct LOO predictive distributions when
 #' combined with integrated PSIS-LOO.
 poisson_vi_int <- root("roaches","poisson_vi_integrate.stan")
-#| output: asis
+#| results: asis
 print_stan_file(poisson_vi_int)
 
 #' We could also move the integrated likelihood to the model block and

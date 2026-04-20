@@ -75,9 +75,10 @@ dens <- function(x, adj = 0.5, norm.comp = FALSE, main = "",
 }
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -193,7 +194,7 @@ synth_cats |>
 
 #' ## First Stan model
 cat_code1 <- root("cat_adoptions", "adoptions_observed.stan")
-#| output: asis
+#| results: asis
 print_stan_file(cat_code1)
 
 #' Prior predictive simulation
@@ -321,7 +322,7 @@ sim_cats2 <- function(n = 10, p = c(0.1, 0.2), cens = 50) {
 }
 
 cat_code2 <- root("cat_adoptions", "adoptions_censored.stan")
-#| output: asis
+#| results: asis
 print_stan_file(cat_code2)
 
 #' Test censoring model using simulated data
@@ -434,7 +435,7 @@ lapply(1:n, \(i) sim_cats1(n = 1e3, p = post2[i, c("p[1]", "p[2]")]) |>
 
 #' ## Model that uses parameters for censored observations
 cat_code3 <- root("cat_adoptions", "adoptions_imputation.stan")
-#| output: asis
+#| results: asis
 print_stan_file(cat_code3)
 
 #'
@@ -458,7 +459,7 @@ options(oldo)
 #'
 
 cat_code4 <- root("cat_adoptions", "adoptions_poisson.stan")
-#| output: asis
+#| results: asis
 print_stan_file(cat_code4)
 
 #| results: hide
@@ -488,7 +489,7 @@ sim_dat <- sim_cats3(n = 1000, p = c(0.2, 0.1), xsd = c(0.1, 0.1))
 
 #' Varying effects model
 cat_code5 <- root("cat_adoptions", "adoptions_varying.stan")
-#| output: asis
+#| results: asis
 print_stan_file(cat_code5)
 
 #| results: hide

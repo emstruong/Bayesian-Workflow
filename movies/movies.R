@@ -49,9 +49,10 @@ library(dplyr)
 set.seed(1234)
 
 print_stan_code <- function(code) {
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {

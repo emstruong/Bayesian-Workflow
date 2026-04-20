@@ -53,9 +53,10 @@ fround <- function(x, digits) {
 }
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -74,7 +75,7 @@ print_stan_file <- function(file) {
 #' distributed: $\epsilon_i \sim \operatorname{normal}(0,\sigma)$.
 #' 
 #' Here is the model in Stan:
-#| output: asis
+#| results: asis
 print_stan_file(root("declining_exponentials",  "exponential.stan"))
 
 #' We have given the parameters $a$, and $b$, and $\sigma$ normal
@@ -88,7 +89,7 @@ print_stan_file(root("declining_exponentials",  "exponential.stan"))
 #' Another point about the above Stan program: the model for $y$ is
 #' vectorized and could instead have been written more explicitly as a
 #' loop:
-#' ```
+#' ```stan
 #' for (i in 1:N) {
 #'   y[i] ~ normal(a*exp(-b*x[i]), sigma);
 #' }
@@ -140,7 +141,7 @@ print(fit_1)
 #' descends to zero. We would thus want to constrain the parameters
 #' $a$ and $b$ to be positive, which we can do in the parameters
 #' block:
-#' ```
+#' ```stan
 #'   real<lower=0> a;
 #'   real<lower=0> b;
 #' ```
@@ -206,7 +207,7 @@ print(fit_2b)
 #' $$
 #' 
 #' Here is the model in Stan:
-#| output: asis
+#| results: asis
 print_stan_file(root("declining_exponentials", "exponential_positive_lognormal.stan"))
 
 #' As before, we can simulate fake data from this model:
@@ -261,7 +262,7 @@ print(fit_3)
 #' with lognormally-distributed errors $\epsilon$.
 #' 
 #' Here is the model in Stan:
-#| output: asis
+#| results: asis
 print_stan_file(root("declining_exponentials", "sum_of_exponentials.stan"))
 
 #' The coefficients $a$ and the residual standard deviation $\sigma$
@@ -388,7 +389,7 @@ text(6.1, 1.3, "y = 1.8*exp(-0.135x)", adj = 1)
 #' shall use our default, which is independent $\operatorname{normal}(0,1)$
 #' prior densities on all the parameters; thus, we add these lines to
 #' the model block in the Stan program:
-#' ```
+#' ```stan
 #'   a ~ normal(0, 1);
 #'   b ~ normal(0, 1);
 #'   sigma ~ normal(0, 1);

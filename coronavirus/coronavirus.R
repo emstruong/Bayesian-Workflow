@@ -53,9 +53,10 @@ library(ggh4x)
 
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -84,7 +85,7 @@ spin <- function(x, lower=NULL, upper=NULL, conf=0.95) {
 #' # Simple model fit using pooled specificity and sensitivity
 
 code <- root("coronavirus", "santa-clara.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code)
 #'
 sc_model <- cmdstan_model(code)
@@ -211,7 +212,7 @@ powerscale_plot_dens(
 #'
 #' Hierarchical model that allows sensitivity and specificity to vary across studies.
 code_hierarchical <- root("coronavirus", "santa-clara-hierarchical.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_hierarchical)
 #'
 sc_model_hierarchical <- cmdstan_model(code_hierarchical)
@@ -318,7 +319,7 @@ print(spin(draws_3b[, , "sigma_logit_sens"], conf = 0.95), digits = 2)
 #' category, and zip code.  Model is set up to use the ethnicity, age,
 #' and zip categories of @Bendavid-Mulaney-Sood-etal:2020b
 code_model_hierarchical_mrp <- root("coronavirus", "santa-clara-hierarchical-mrp.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_model_hierarchical_mrp)
 #'
 sc_model_hierarchical_mrp <- cmdstan_model(code_model_hierarchical_mrp)
@@ -421,7 +422,7 @@ unk_df <- data.frame(pos_tests, tests, sample_prev = pos_tests / tests)
 
 #' Stan model for prior sensitivity analysis
 code_sens <- root("coronavirus", "prior-sensitivity.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_sens)
 #'
 model_sens <- cmdstan_model(code_sens)

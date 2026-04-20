@@ -60,9 +60,10 @@ mytoc <- \() {
   })}
 
 print_stan_code <- function(code) {
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -233,7 +234,7 @@ stan_data <- list(
 #' model can be presented as a linear model. We use weak priors for
 #' the coefficients and varying effect population scales.
 park_1 <- cmdstan_model(root("park_rule", "park_1.stan"))
-#| output: asis
+#| results: asis
 print_stan_code(park_1$code())
 
 #' When using the default sampling options and working interactively, we
@@ -330,7 +331,7 @@ draws_rvars(a = as_draws_rvars(draws_1)$a,
 #' data type does not allow `multiplier`, we need to change how we
 #' implement the non-centered parameterization.
 park_2 <- cmdstan_model(root("park_rule", "park_2.stan"))
-#| output: asis
+#| results: asis
 print_stan_code(park_2$code())
 #| label: fit_2
 #| results: hide
@@ -427,7 +428,7 @@ draws_2 |>
 #' that there is not much difference between the parameterizations for
 #' `a_respondent` and thus we use the simpler form.
 park_3 <- cmdstan_model(root("park_rule", "park_3.stan"))
-#| output: asis
+#| results: asis
 print_stan_code(park_3$code())
 #| label: fit_3
 #| results: hide
@@ -456,7 +457,7 @@ fit_3$sampler_diagnostics() |> as_draws_rvars()
 #' predictor values. We can do the centering in Stan code block
 #' `transformed data`.
 park_4 <- cmdstan_model(root("park_rule", "park_4.stan"))
-#| output: asis
+#| results: asis
 print_stan_code(park_4$code())
 #| label: fit_4
 #| results: hide

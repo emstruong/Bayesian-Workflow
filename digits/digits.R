@@ -139,9 +139,10 @@ SEED <- 48927 # set random seed for reproducibility
 
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -179,7 +180,7 @@ ggplot() +
 #' easier to define the prior on average temperature in the center of
 #' the time range (instead defining prior for temperature at year 0).
 code_lin <- root("digits", "linear.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_lin)
 
 #' Prior parameter values for weakly informative priors
@@ -270,7 +271,7 @@ draws |>
 #' method and options for the specific object. Above we have used
 #' `tinytable::tt()` to make pretty tables. In the beginning of the code
 #' we did set options
-#' ```
+#' ```r
 #' options(tinytable_format_num_fmt = "significant_cell",
 #'         tinytable_format_digits = 2,
 #'         tinytable_tt_digits = 2)
@@ -284,8 +285,8 @@ draws |>
   tt()
 #' The printing of tibbles is handled by `pillar`, which by default
 #' prints 3 significant digits, but we have set in the beginning an
-#' option to show 2 significant digits. 
-#' ```
+#' option to show 2 significant digits.
+#' ```r
 #' options(pillar.sigfig = 2)
 #' ```
 #' 

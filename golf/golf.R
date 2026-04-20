@@ -51,9 +51,10 @@ invlogit <- plogis
 fround <- function (x, digits) format(round(x, digits), nsmall = digits)
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -109,7 +110,7 @@ text(x + .4,
 #' \text{ for } j=1,\dots, J.
 #' $$
 #' In Stan, this is:
-#| output: asis
+#| results: asis
 print_stan_file(root("golf", "golf_logistic.stan"))
 
 #' The code in the above model block is (implicitly) vectorized, so
@@ -286,7 +287,7 @@ for (i in 1:length(sigma_degrees_plot)){
 #' space of $\sigma$, sampling from the posterior distribution.
 #'
 #' We now write the Stan model in preparation to estimating $\sigma$:
-#| output: asis
+#| results: asis
 print_stan_file(root("golf", "golf_angle_binomial.stan"))
 
 #' In the transformed data block above, the `./` in the calculation of
@@ -471,7 +472,7 @@ arrows(0.5 * dist - 0.05, -1.5 * R_plot, 0, -1.5 * R_plot, 2, length = .1)
 #' write the new model in Stan, giving it the name
 #' `golf_angle_distance_binomial.stan` to convey that it accounts both
 #' for angle and distance:
-#| output: asis
+#| results: asis
 print_stan_file(root("golf", "golf_angle_distance_binomial.stan"))
 
 #' The result is a model with two parameters, $\sigma_{\rm angle}$ and
@@ -602,7 +603,7 @@ print(golf_new[1:5,])
 #' To complete the model we add $\sigma_y$ to the parameters block and
 #' assign it a weakly informative half-normal(0,1) prior
 #' distribution. Here's the new Stan program:
-#| output: asis
+#| results: asis
 print_stan_file(root("golf", "golf_angle_distance_normal.stan"))
 
 #' We now fit this model to the data:
@@ -701,7 +702,7 @@ lines(golf_new$x, posterior_mean_residual)
 #' to keep the probabilities bounded between 0 and 1. We added an
 #' error term on the logistic scale with a scale parameter, `sigma_eta`,
 #' estimated from the data.
-#| output: asis
+#| results: asis
 print_stan_file(root("golf", "golf_angle_distance_binomial_with_logit_errors.stan"))
 
 #' We fit the model to the data:
@@ -765,7 +766,7 @@ points(golf_new$x, golf_new$y/golf_new$n, pch = 20, col = "red")
 #' positive and less than 1. This eliminates the problem with the
 #' boundary and the need for the logit.  The prior distribution for
 #' `epsilon` keeps the errors under control.
-#| output: asis
+#| results: asis
 print_stan_file(root("golf", "golf_angle_distance_binomial_with_proportional_errors.stan"))
 
 #' We fit the model to the data:

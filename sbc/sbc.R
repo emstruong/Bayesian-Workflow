@@ -122,9 +122,10 @@ plan(multisession)
 
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -147,7 +148,7 @@ if (!dir.exists(cache_dir)) {
 #' 
 #' So this is our first try at implementing the mixture submodel:
 code_first <- root("sbc", "models/mixture_first.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_first)
 #| label: model_first
 model_first <- cmdstan_model(code_first)
@@ -217,7 +218,7 @@ mixture_first_pairs
 #' 
 #' We make a new model fixing the `log_mix` problem.
 code_fixed_log_mix <- root("sbc", "models/mixture_fixed_log_mix.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_fixed_log_mix)
 #| label: model_fixed_log_mix
 model_fixed_log_mix <- cmdstan_model(code_fixed_log_mix)
@@ -268,7 +269,7 @@ mixture_fixed_log_mix_pairs
 #' 
 #' We can easily fix the ordering of the `mu`s by using the `ordered` built-in type.
 code_fixed_ordered <- root("sbc", "models/mixture_fixed_ordered.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_fixed_ordered)
 #| label: model_fixed_ordered
 model_fixed_ordered <- cmdstan_model(code_fixed_ordered)
@@ -472,7 +473,7 @@ plot_coverage(results_fixed_ordered_combined)
 #'
 #' Let's move to the logistic regression submodel of our model.
 code_logistic_first <- root("sbc", "models/logistic_first.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_logistic_first)
 #| label: model_logistic_first
 model_logistic_first <- cmdstan_model(code_logistic_first)
@@ -577,7 +578,7 @@ logistic_first_ranks_dq / logistic_first_ecdf_dq
 #' prior. This is also how most common regression modelling packages
 #' handle the situation. We thus modify our Stan code to:
 code_logistic_merged_intercept <- root("sbc", "models/logistic_merged_intercept.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_logistic_merged_intercept)
   
 #' This looks cleaner, but you may notice one additional issue that we
@@ -648,7 +649,7 @@ logistic_merged_intercept_ranks / logistic_merged_intercept_ecdf
 #' ```
 #' so the full model now is:
 code_logistic_fixed_prior <- root("sbc", "models/logistic_fixed_prior.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_logistic_fixed_prior)
 #| label: model_logistic_fixed_prior
 model_logistic_fixed_prior <- cmdstan_model(code_logistic_fixed_prior)
@@ -697,7 +698,7 @@ plot_sim_estimated(results_logistic_fixed_prior_200)
 #'
 #' We are finally ready to make a first attempt at the full model:
 code_combined <- root("sbc", "models/combined_first.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_combined)
 #| label: model_combined_first
 model_combined <- cmdstan_model(code_combined)

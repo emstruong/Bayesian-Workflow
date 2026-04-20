@@ -98,9 +98,10 @@ theme_set(bayesplot::theme_default(base_family = "sans"))
 set.seed(1954)
 
 print_stan_code <- function(code) {
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -152,7 +153,7 @@ print_stan_code <- function(code) {
 #' and we set $k = 1$.
 #| results: hide
 mod_sim <- cmdstan_model(root("planetary_motion", "planetary_motion_sim.stan"))
-#| output: asis
+#| results: asis
 print_stan_code(mod_sim$code())
 
 
@@ -221,7 +222,7 @@ stan_data1 <- list(N = N, q_obs = q_obs)
 chains <- 8
 #| results: hide
 mod1 <- cmdstan_model(root("planetary_motion", "planetary_motion.stan"))
-#| output: asis
+#| results: asis
 print_stan_code(mod1$code())
 #| label: fit1
 #| eval: false
@@ -732,7 +733,7 @@ ggplot(data = data.frame(star_x = star_data[, 1],
 #' above was shown to be bad for MCMC.
 #| results: hide
 mod2 <- cmdstan_model(root("planetary_motion", "planetary_motion_star.stan"))
-#| output: asis
+#| results: asis
 print_stan_code(mod2$code())
 
 N_select <- 40

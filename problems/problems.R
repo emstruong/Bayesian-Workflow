@@ -55,9 +55,10 @@ SEED <- 48927 # set random seed for reproducibility
 
 print_stan_file <- function(file) {
   code <- readLines(file)
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -101,7 +102,7 @@ data.frame(data_logit) |>
 #' We use the following Stan logistic regression model, where we have
 #' ``forgot'' to include prior for the coefficient `beta`.
 code_logit <- root("problems", "logit_glm.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_logit)
 
 #' Sample
@@ -164,7 +165,7 @@ mod_logit$check_syntax(pedantic = TRUE)
 #'
 #' We add proper weak priors and rerun inference.
 code_logit2 <- root("problems", "logit_glm2.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_logit2)
 #' Sample
 #| label: fit_logit2
@@ -205,7 +206,7 @@ mcmc_pairs(as_draws_array(draws), pars = c("alpha", "beta"),
 #'
 #' ## Model
 code_logit3 <- root("problems", "logit_glm3.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_logit3)
 #' Sample
 #| label: fit_logit3
@@ -275,7 +276,7 @@ data_logit4 <- list(M = M, N = N, x = x, y = y)
 #' (and no extra `gamma`).
 #'
 code_logit2 <- root("problems", "logit_glm2.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_logit2)
 #' Sample
 #| label: fit_logit4
@@ -363,7 +364,7 @@ data.frame(data_lin) |>
 #'
 #' We use the following Stan linear regression model
 code_lin <- root("problems", "linear_glm_kilpis.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_lin)
 
 #| label: fit_lin_kilpis
@@ -459,7 +460,7 @@ data_tt <- list(N = N, y = y)
 #'
 #' Unimodal Student's $t$ model:
 code_tt <- root("problems", "student.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_tt)
 #' Sample
 #| label: fit_tt_hard
@@ -591,7 +592,7 @@ data.frame(data_pois) |>
 #' `alpha + beta * x` but is implemented with better computational
 #' efficiency.
 code_pois <- root("problems", "pois_glm.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_pois)
 #' Sample
 #| label: fit_pois
@@ -601,7 +602,7 @@ fit_pois <- mod_pois$sample(data = data_pois, seed = SEED, refresh = 0)
 
 #' We get a lot of warnings:
 #'
-#'```
+#'```text
 #' Chain 4 Rejecting initial value:
 #' Chain 4   Log probability evaluates to log(0), i.e. negative infinity.
 #' Chain 4   Stan can't start sampling from this initial value.
@@ -673,7 +674,7 @@ summarize_draws(draws)
 #'
 #' ## Model
 code_logit_glm4 <- root("problems", "logit_glm4.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_logit_glm4)
 #' Sample
 #| label: fit_logit_glm4
@@ -755,7 +756,7 @@ data_grpy <-list(N = length(data_kilpis$year)*ncol(data_kilpis[,2:4]),
 #' Stan. The parameterization used is also known as centered
 #' parameterization.
 code_hier_cp <- root("problems", "hier_cp.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_hier_cp)
 
 #' We first try running Stan with its default settings.
@@ -823,7 +824,7 @@ p2
 #' in a transformed space that does not have the difficult funnel
 #' geometry. 
 code_hier_ncp <- root("problems", "hier_ncp.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_hier_ncp)
 
 #' We run Stan with its default settings.
@@ -893,7 +894,7 @@ data_lin <- list(M = M, N = N, x = x, y = y)
 #'
 #' We use linear regression model with proper priors.
 code_lin <- root("problems", "linear_glm.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_lin)
 #' Sample
 #| label: fit_lin
@@ -902,7 +903,7 @@ mod_lin <- cmdstan_model(stan_file = code_lin)
 fit_lin <- mod_lin$sample(data = data_lin, seed = SEED, refresh = 0)
 
 #' We get many times the following warnings
-#'```
+#'```text
 #' Chain 4 Informational Message: The current Metropolis proposal is about to be rejected because of the following issue:
 #' Chain 4 Exception: normal_id_glm_lpdf: Scale vector is -0.747476, but must be positive finite! (in '/tmp/RtmprEP4gg/model-7caa12ce8e405.stan', line 16, column 2 to column 43)
 #' Chain 4 If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine,
@@ -947,7 +948,7 @@ mod_lin$check_syntax(pedantic = TRUE)
 #'
 #' Fixed model includes <lower=0> constraint for sigma.
 code_lin2 <- root("problems", "linear_glm2.stan")
-#| output: asis
+#| results: asis
 print_stan_file(code_lin2)
 #' Sample
 #| label: fit_lin2

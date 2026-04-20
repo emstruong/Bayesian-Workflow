@@ -59,9 +59,10 @@ set.seed(123)
 source(root("multiple_choice", "plot_functions.R"))
 
 print_stan_code <- function(code) {
-  if (isTRUE(getOption("knitr.in.progress")) &
-        identical(knitr::opts_current$get("results"), "asis")) {
-    # In render: emit as-is so Pandoc/Quarto does syntax highlighting
+  results_opt <- knitr::opts_current$get("results")
+  output_opt  <- knitr::opts_current$get("output")
+  if (isTRUE(getOption("knitr.in.progress")) &&
+        (identical(results_opt, "asis") || identical(output_opt, "asis"))) {
     block <- paste0("```stan", "\n", paste(code, collapse = "\n"), "\n", "```")
     knitr::asis_output(block)
   } else {
@@ -110,7 +111,7 @@ item_id_0 <- LETTERS[1:J]  # Only works here because J is no more than 26!
 #' # Simple models
 #' 
 #' ## Base model logit_0
-#| output: asis
+#| results: asis
 print_stan_code(logit_0$code())
 
 #| label: fig-final_exams_1
@@ -126,7 +127,7 @@ plot_logit(
 )
 
 #' ## Add priors
-#| output: asis
+#| results: asis
 print_stan_code(logit_prior$code())
 
 #| label: fig-final_exams_2
@@ -195,7 +196,7 @@ plot_logit_grid(
 )
 
 #' ## Allow for guessing
-#| output: asis
+#| results: asis
 print_stan_code(logit_guessing$code())
 
 #| label: fig-final_exams_4
@@ -236,7 +237,7 @@ longdata <- list(
 )
 
 #' ## Multilevel model
-#| output: asis
+#| results: asis
 print_stan_code(logit_guessing_multilevel$code())
 
 #| label: fig-final_exams_5
@@ -259,7 +260,7 @@ fit_5 <- plot_logit_grid_2(
 print(fit_5, variables = c("mu_a", "sigma_a", "mu_b", "sigma_b"))
 
 #' ## Multilevel model with correlation
-#| output: asis
+#| results: asis
 print_stan_code(logit_guessing_multilevel_bivariate$code())
 
 #| label: fig-final_exams_6
@@ -282,7 +283,7 @@ fit_6 <- plot_logit_grid_2(
 print(fit_6, variables = c("mu_ab", "sigma_ab", "Omega_ab"))
 
 #' ## Multilevel model with correlation using Cholesky
-#| output: asis
+#| results: asis
 print_stan_code(logit_guessing_multilevel_bivariate_cholesky$code())
 
 #| label: fig-final_exams_7
@@ -308,7 +309,7 @@ print(fit_7, variables = c("mu_ab", "sigma_ab", "Omega_ab"))
 #' # Item-response theory (IRT) models
 #'
 #' ## Item-response model
-#| output: asis
+#| results: asis
 print_stan_code(irt_guessing$code())
 
 #| label: fig-final_exams_11
@@ -326,7 +327,7 @@ fit_11 <- plot_irt(
 )
 
 #' ## Item-response model with discrimination parameters
-#| output: asis
+#| results: asis
 print_stan_code(irt_guessing_discrimination$code())
 
 #| label: fig-final_exams_12
@@ -475,7 +476,7 @@ mtext("10 prior predictive simulations with a ~ normal(0, 50) and b ~ normal(0, 
 
 
 #' # Breaking the model
-#| output: asis
+#| results: asis
 print_stan_code(logit_guessing_uncentered$code())
 
 #' Simulate data
