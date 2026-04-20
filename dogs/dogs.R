@@ -358,7 +358,7 @@ loo_compare(bfit_0, bfit_0h, bfit_1) |>
 
 #' # Model 2: 2-parameter log model
 #'
-#' This is the original 2-parameter model proposed by @Bush+Mosteller:1955:
+#' This is the original 2-parameter model proposed by @Bush+Mosteller:1955,
 #' $$
 #' \begin{aligned}
 #' \Pr(\mathrm{shock}) & = a^{x_{1jt}}\,b^{x_{2jt}}\\

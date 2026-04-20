@@ -111,7 +111,7 @@ M_3 <- update(M_1, formula = kcal.per.g ~ log(mass))
 M_4 <- update(M_1, formula = kcal.per.g ~ neocortex + log(mass))
 
 #' We compute LOO-CV estimates using the fast PSIS-LOO method
-#' [@Vehtari+Gelman+Gabry:2017_practical, @Vehtari+etal:2024:PSIS]
+#' [@Vehtari+Gelman+Gabry:2017_practical, @Vehtari+etal:PSIS:2024]
 loo1 <- loo(M_1)
 loo2 <- loo(M_2)
 loo3 <- loo(M_3)
@@ -182,7 +182,7 @@ tibble(model=colnames(loo_comp2),
 #' As the predictive distribution includes the aleatoric uncertainty
 #' (modelled by the data model), there is often more uncertainty in
 #' the predictive performance model comparison than in the posterior
-#' distribution (see, e.g., @Wang-Gelman:2015). In simple
+#' distribution (see, e.g., @Wang+Gelman:2015:difficulty). In simple
 #' models, we can also look at the posterior for the quantities of
 #' interest. With model $\mathrm{M}_4$, $95\%$ central posterior
 #' intervals for $\beta_1$ and $\beta_2$ are $(1.1,3.7)$ and
@@ -233,7 +233,7 @@ sleepstudy2 <- sleepstudy |>
 #' for the analysis, but comparing models is useful for assessing how
 #' much information the data has about the varying intercepts and
 #' slopes. For a few LOO-folds with high Pareto-$\hat{k}$ diagnostic
-#' value ($>0.7$, @Vehtari+etal:2024:PSIS) we re-ran MCMC (with
+#' value ($>0.7$, @Vehtari+etal:PSIS:2024) we re-ran MCMC (with
 #' `reloo=TRUE` in `brms`). We use `add_criterion()` to store the
 #' loo object inside the brmsfit objects.
 #'
@@ -431,7 +431,7 @@ roaches$sqrt_roach1 <- sqrt(roaches$roach1)
 #' Pareto-$\hat{k}$ diagnostic value (>0.7) (with `reloo=TRUE` in
 #' `brms`), and for negative-binomial and zero-inflated
 #' negative-binomial we used moment matching
-#' [@Paananen+etal:2021:implicit} for a few LOO-folds with high
+#' [@Paananen+etal:2021:implicit] for a few LOO-folds with high
 #' Pareto-$\hat{k}$ diagnostic value (>0.7) (with `moment_match=TRUE`
 #' in `brms`).
 #| label: roaches_models
